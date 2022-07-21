@@ -34,6 +34,7 @@
         <item name="android:textColor">@color/white</item>
     </style>
     <style name="ResourcesInput">
+        <item name="android:text">0</item>
         <item name="android:layout_width">80dp</item>
         <item name="android:layout_height">45dp</item>
         <item name="android:ems">10</item>

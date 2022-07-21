@@ -20,11 +20,13 @@
         app:layout_constraintVertical_bias="0.022" />
 
     <TextView
-        android:layout_width="240dp"
-        android:layout_height="166dp"
+        android:id="@+id/statusText"
+        android:layout_width="241dp"
+        android:layout_height="198dp"
         android:fontFamily="@font/find_lovers"
         android:gravity="center"
         android:text="Ready"
+        android:lineHeight="60dp"
         android:textColor="@android:color/holo_green_light"
         android:textSize="36dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -78,6 +80,7 @@
     <ImageButton
         style="@style/CoffeeImg"
         android:background="@drawable/cappuccino"
+        android:id="@+id/cappuccinoBtn"
         android:onClick="buttonEffect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -89,6 +92,7 @@
     <ImageButton
         style="@style/CoffeeImg"
         android:background="@drawable/latte"
+        android:id="@+id/latteBtn"
         android:onClick="buttonEffect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -99,9 +103,8 @@
 
     <ImageButton
         style="@style/CoffeeImg"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
         android:background="@drawable/espresso"
+        android:id="@+id/espressoBtn"
         android:onClick="buttonEffect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -155,6 +158,7 @@
         app:srcCompat="@drawable/cup" />
 
     <TextView
+        android:id="@+id/waterText"
         style="@style/ResourcesText"
         android:text="0 ml."
         app:layout_constraintBottom_toBottomOf="parent"
@@ -165,6 +169,7 @@
         app:layout_constraintVertical_bias="0.650" />
 
     <TextView
+        android:id="@+id/milkText"
         style="@style/ResourcesText"
         android:text="0 ml."
         app:layout_constraintBottom_toBottomOf="parent"
@@ -175,6 +180,7 @@
         app:layout_constraintVertical_bias="0.745" />
 
     <TextView
+        android:id="@+id/coffeeText"
         style="@style/ResourcesText"
         android:text="0 gr."
         app:layout_constraintBottom_toBottomOf="parent"
@@ -185,6 +191,7 @@
         app:layout_constraintVertical_bias="0.840" />
 
     <TextView
+        android:id="@+id/cupsText"
         style="@style/ResourcesText"
         android:text="0 pcs."
         app:layout_constraintBottom_toBottomOf="parent"
@@ -195,6 +202,7 @@
         app:layout_constraintVertical_bias="0.935" />
 
     <EditText
+        android:id="@+id/waterInput"
         style="@style/ResourcesInput"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -204,6 +212,7 @@
         app:layout_constraintVertical_bias="0.655" />
 
     <EditText
+        android:id="@+id/milkInput"
         style="@style/ResourcesInput"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -213,6 +222,7 @@
         app:layout_constraintVertical_bias="0.753" />
 
     <EditText
+        android:id="@+id/coffeeInput"
         style="@style/ResourcesInput"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -222,6 +232,7 @@
         app:layout_constraintVertical_bias="0.852" />
 
     <EditText
+        android:id="@+id/cupsInput"
         style="@style/ResourcesInput"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -231,10 +242,10 @@
         app:layout_constraintVertical_bias="0.934" />
 
     <Button
-        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:radius="20dp"
+        android:id="@+id/fillBtn"
         android:text="FILL"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -245,6 +256,7 @@
 
     <ImageButton
         style="@style/CoffeeImg"
+        android:id="@+id/moneyBtn"
         android:background="@drawable/money"
         android:onClick="buttonEffect"
         app:layout_constraintBottom_toBottomOf="parent"
