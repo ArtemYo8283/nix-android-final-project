@@ -9,6 +9,6 @@
 <hr>
 <h2>Practice</h2>
 <br>
-<h3>Chat Bot</h3>
+<h3>Coffee Machine</h3>
 <br>
 <img src="https://github.com/ArtemYo8283/ArtemYo8283/blob/a3cb83e92dfdcbddeae78e65fccc0998fce2c5d3/Images/App.jpg" width="200px" style="padding:10px; margin-left:10px; background:white; border-radius:15px;">
