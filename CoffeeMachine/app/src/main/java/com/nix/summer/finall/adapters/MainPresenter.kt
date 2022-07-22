@@ -2,9 +2,15 @@ package com.nix.summer.finall.adapters
 import com.nix.summer.finall.core.entities.Resources
 import com.nix.summer.finall.core.entities.Coffee
 import com.nix.summer.finall.core.entities.Status
-import com.nix.summer.finall.core.model.Model
+import com.nix.summer.finall.core.interactors.BuyCoffeeInteractor
+import com.nix.summer.finall.core.interactors.FillResourcesInteractor
+import com.nix.summer.finall.core.interactors.TakeMoneyInteractor
+import com.nix.summer.finall.core.interactors.ShowResourcesInteractor
 
-class MainPresenter(private val model: Model) : Contract.Presenter {
+class MainPresenter(var buyCoffeeInteractor: BuyCoffeeInteractor,
+                    var fillResourcesInteractor: FillResourcesInteractor,
+                    var takeMoneyInteractor: TakeMoneyInteractor,
+                    var showResourcesInteractor: ShowResourcesInteractor) : Contract.Presenter {
 
     private var view: Contract.View? = null
 
@@ -17,34 +23,34 @@ class MainPresenter(private val model: Model) : Contract.Presenter {
     }
 
     fun start() {
-        view?.showResources(model.remaining())
+        view?.showResources(showResourcesInteractor())
     }
 
     fun takeCommand(command: String){
         when (command) {
             "ESPRESSO" -> {
-                view?.setStatus(model.buy(Coffee.ESPRESSO))
+                view?.setStatus(buyCoffeeInteractor(Coffee.ESPRESSO))
             }
             "LATTE" -> {
-                view?.setStatus(model.buy(Coffee.LATTE))
+                view?.setStatus(buyCoffeeInteractor(Coffee.LATTE))
             }
             "CAPPUCCINO" -> {
-                view?.setStatus(model.buy(Coffee.CAPPUCCINO))
+                view?.setStatus(buyCoffeeInteractor(Coffee.CAPPUCCINO))
             }
             "take" -> {
-                view?.takeMoney(model.take())
+                view?.takeMoney(takeMoneyInteractor())
             }
             "remaining" -> {
-                view?.showResources(model.remaining())
+                view?.showResources(showResourcesInteractor())
             }
             else -> println(" ")
         }
-        view?.showResources(model.remaining())
+        view?.showResources(showResourcesInteractor())
     }
 
     fun fillResources(resources: Resources) {
-        model.fill(resources)
-        view?.showResources(model.remaining())
+        fillResourcesInteractor(resources)
+        view?.showResources(showResourcesInteractor())
     }
 
 }

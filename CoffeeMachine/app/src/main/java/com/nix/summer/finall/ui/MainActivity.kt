@@ -14,10 +14,19 @@ import com.nix.summer.finall.adapters.Contract
 import com.nix.summer.finall.adapters.MainPresenter
 import com.nix.summer.finall.core.entities.Resources
 import com.nix.summer.finall.core.entities.Status
-import com.nix.summer.finall.core.model.Model
+import com.nix.summer.finall.core.interactors.BuyCoffeeInteractor
+import com.nix.summer.finall.core.interactors.FillResourcesInteractor
+import com.nix.summer.finall.core.interactors.TakeMoneyInteractor
+import com.nix.summer.finall.core.interactors.ShowResourcesInteractor
+import com.nix.summer.finall.data.repositories.FakeActionRepositoryImplementation
 
 class MainActivity : AppCompatActivity(), Contract.View {
-    private var presenter = MainPresenter(Model())
+    private var presenter = MainPresenter(
+        BuyCoffeeInteractor(FakeActionRepositoryImplementation()),
+        FillResourcesInteractor(FakeActionRepositoryImplementation()),
+        TakeMoneyInteractor(FakeActionRepositoryImplementation()),
+        ShowResourcesInteractor(FakeActionRepositoryImplementation())
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
