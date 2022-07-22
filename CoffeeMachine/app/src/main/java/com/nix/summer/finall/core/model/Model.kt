@@ -1,24 +1,8 @@
-package com.nix.summer.finall
+package com.nix.summer.finall.core.model
 import android.view.View
-
-data class Resources(var water: Int = 0,
-                     var milk: Int = 0,
-                     var coffeeBeans: Int = 0,
-                     var disposableCups: Int = 0)
-
-enum class Coffee(val water: Int, val milk: Int, val coffee: Int, val money: Int) {
-    ESPRESSO (250, 0, 16, 4),
-    LATTE (350, 75, 20, 7),
-    CAPPUCCINO (200, 100, 12, 6)
-}
-
-enum class Status(val msg: String) {
-    WATERERROR ("Sorry, not enough water!"),
-    MILKERROR ("Sorry, not enough milk!"),
-    COFFEEERROR ("Sorry, not enough coffee!"),
-    CUPERROR ("Sorry, not enough cups!"),
-    OK ("Coffee is ready! Go to work!")
-}
+import com.nix.summer.finall.core.entities.Resources
+import com.nix.summer.finall.core.entities.Coffee
+import com.nix.summer.finall.core.entities.Status
 
 class Model {
 

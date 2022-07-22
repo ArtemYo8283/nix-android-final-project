@@ -1,4 +1,4 @@
-package com.nix.summer.finall
+package com.nix.summer.finall.ui
 
 import androidx.core.content.ContextCompat
 import android.graphics.Color
@@ -9,17 +9,21 @@ import android.view.View
 import android.view.View.OnTouchListener
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.nix.summer.finall.*
+import com.nix.summer.finall.adapters.Contract
+import com.nix.summer.finall.adapters.MainPresenter
+import com.nix.summer.finall.core.entities.Resources
+import com.nix.summer.finall.core.entities.Status
+import com.nix.summer.finall.core.model.Model
 
-
-class MainActivity : AppCompatActivity() {
-    val model = Model()
-    val controller = Controller(model)
+class MainActivity : AppCompatActivity(), Contract.View {
+    private var presenter = MainPresenter(Model())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        controller.attachView(this)
-        controller.start()
+        presenter.attach(this)
+        presenter.start()
         val fillBtn_click = findViewById(R.id.fillBtn) as Button
         fillBtn_click.setOnClickListener {
             fillResources()
@@ -27,26 +31,26 @@ class MainActivity : AppCompatActivity() {
 
         val moneyBtn_click = findViewById(R.id.moneyBtn) as ImageButton
         moneyBtn_click.setOnClickListener {
-            controller.takeCommand("take")
+            presenter.takeCommand("take")
         }
 
         val espressoBtn_click = findViewById(R.id.espressoBtn) as ImageButton
         espressoBtn_click.setOnClickListener {
-            controller.takeCommand("ESPRESSO")
+            presenter.takeCommand("ESPRESSO")
         }
 
         val latteBtn_click = findViewById(R.id.latteBtn) as ImageButton
         latteBtn_click.setOnClickListener {
-            controller.takeCommand("LATTE")
+            presenter.takeCommand("LATTE")
         }
 
         val cappuccinoBtn_click = findViewById(R.id.cappuccinoBtn) as ImageButton
         cappuccinoBtn_click.setOnClickListener {
-            controller.takeCommand("CAPPUCCINO")
+            presenter.takeCommand("CAPPUCCINO")
         }
     }
 
-    fun setStatus(status: Status)
+    override fun setStatus(status: Status)
     {
 
         val statusText: TextView = findViewById(R.id.statusText)
@@ -75,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    fun showResources(resources: Resources) {
+    override fun showResources(resources: Resources) {
         val waterText: TextView  = findViewById(R.id.waterText)
         waterText.text = resources.water.toString() + " ml."
 
@@ -89,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         cupsText.text = resources.disposableCups.toString() + " pcs."
     }
 
-    fun takeMoney(money: Int) {
+    override fun takeMoney(money: Int) {
         Toast.makeText(this@MainActivity, "You receive $money grn.", Toast.LENGTH_SHORT).show()
     }
 
@@ -106,7 +110,7 @@ class MainActivity : AppCompatActivity() {
         milkInput.setText("0")
         coffeeInput.setText("0")
         cupsInput.setText("0")
-        controller.fillResources(resources)
+        presenter.fillResources(resources)
     }
 }
 
