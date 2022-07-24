@@ -15,6 +15,6 @@ class ExchangeCurrencyInteractor(private val repository: PaymentRepository) {
             payment
         }
 
-        return with(exchangedPayment) { "${String.format("%.2f", amount)} $currency" }
+        return with(exchangedPayment) {"${String.format("%.2f", amount)} $currency" }
     }
 }

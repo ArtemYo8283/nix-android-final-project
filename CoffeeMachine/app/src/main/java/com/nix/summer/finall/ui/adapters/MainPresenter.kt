@@ -3,12 +3,15 @@ package com.nix.summer.finall.ui.adapters
 import com.nix.summer.finall.core.entities.Resources
 import com.nix.summer.finall.core.entities.Coffee
 import com.nix.summer.finall.core.entities.Status
+import com.nix.summer.finall.core.entities.Data
 import com.nix.summer.finall.core.entities.Payment
 import com.nix.summer.finall.core.interactors.BuyCoffeeInteractor
 import com.nix.summer.finall.core.interactors.FillResourcesInteractor
 import com.nix.summer.finall.core.interactors.TakeMoneyInteractor
 import com.nix.summer.finall.core.interactors.ShowResourcesInteractor
 import com.nix.summer.finall.core.interactors.ExchangeCurrencyInteractor
+import com.nix.summer.finall.core.interactors.LoadPaymentInteractor
+import com.nix.summer.finall.core.interactors.SaveCurrencyInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.*
@@ -18,7 +21,9 @@ class MainPresenter(var buyCoffeeInteractor: BuyCoffeeInteractor,
                     var fillResourcesInteractor: FillResourcesInteractor,
                     var takeMoneyInteractor: TakeMoneyInteractor,
                     var showResourcesInteractor: ShowResourcesInteractor,
-                    var exchangeCurrencyInteractor: ExchangeCurrencyInteractor) : Contract.Presenter, CoroutineScope {
+                    var exchangeCurrencyInteractor: ExchangeCurrencyInteractor,
+                    var saveCurrencyInteractor: SaveCurrencyInteractor,
+                    var loadPaymentInteractor: LoadPaymentInteractor) : Contract.Presenter, CoroutineScope {
 
     private var view: Contract.View? = null
 
@@ -37,16 +42,25 @@ class MainPresenter(var buyCoffeeInteractor: BuyCoffeeInteractor,
         view?.showResources(showResourcesInteractor())
     }
 
-    fun takeCommand(command: String){
+    fun takeCommand(command: String, currency: String){
         when (command) {
             "ESPRESSO" -> {
                 view?.setStatus(buyCoffeeInteractor(Coffee.ESPRESSO))
+                launch {
+                    saveCurrencyInteractor(Payment(null, Coffee.ESPRESSO.money, currency))
+                }
             }
             "LATTE" -> {
                 view?.setStatus(buyCoffeeInteractor(Coffee.LATTE))
+                launch {
+                    saveCurrencyInteractor(Payment(null, Coffee.LATTE.money, currency))
+                }
             }
             "CAPPUCCINO" -> {
                 view?.setStatus(buyCoffeeInteractor(Coffee.CAPPUCCINO))
+                launch {
+                    saveCurrencyInteractor(Payment(null, Coffee.CAPPUCCINO.money, currency))
+                }
             }
             "take" -> {
                 view?.takeMoney(takeMoneyInteractor())
@@ -66,17 +80,26 @@ class MainPresenter(var buyCoffeeInteractor: BuyCoffeeInteractor,
 
     fun exchangePayment(currency: String) {
         launch {
-            var str = exchangeCurrencyInteractor(Payment(Coffee.ESPRESSO.money, currency))
+            var str = exchangeCurrencyInteractor(Payment(null, Coffee.ESPRESSO.money, currency))
             withContext(Dispatchers.Main) {
                 view?.showEspressoPrice(str)
             }
-            str = exchangeCurrencyInteractor(Payment(Coffee.LATTE.money, currency))
+            str = exchangeCurrencyInteractor(Payment(null, Coffee.LATTE.money, currency))
             withContext(Dispatchers.Main) {
                 view?.showLattePrice(str)
             }
-            str = exchangeCurrencyInteractor(Payment(Coffee.CAPPUCCINO.money, currency))
+            str = exchangeCurrencyInteractor(Payment(null, Coffee.CAPPUCCINO.money, currency))
             withContext(Dispatchers.Main) {
                 view?.showCappuccinoPrice(str)
+            }
+        }
+    }
+
+    fun loadPayment() {
+        launch {
+            val answer = loadPaymentInteractor()
+            withContext(Dispatchers.Main) {
+                view?.showPayment(answer)
             }
         }
     }

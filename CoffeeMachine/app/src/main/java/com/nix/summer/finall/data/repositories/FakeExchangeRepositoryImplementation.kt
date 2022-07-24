@@ -23,8 +23,8 @@ class FakeExchangeRepositoryImplementation(private val exchangeServiceApi: Excha
 
     }
 
-    override fun loadPayment(id: Long): Payment?
+    override fun loadPayment(): Payment?
     {
-        return Payment(0.0, "")
+        return Payment(0, 0.0, "")
     }
 }
