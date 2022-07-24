@@ -10,64 +10,54 @@ import android.view.View.OnTouchListener
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.nix.summer.finall.*
-import com.nix.summer.finall.core.entities.Coffee
 import com.nix.summer.finall.ui.adapters.Contract
 import com.nix.summer.finall.ui.adapters.MainPresenter
+import com.nix.summer.finall.core.entities.Coffee
+import com.nix.summer.finall.core.entities.Data
 import com.nix.summer.finall.core.entities.Resources
 import com.nix.summer.finall.core.entities.Status
+import com.nix.summer.finall.data.database.PaymentDao
+import com.nix.summer.finall.data.database.Database
 import com.nix.summer.finall.core.interactors.BuyCoffeeInteractor
 import com.nix.summer.finall.core.interactors.FillResourcesInteractor
 import com.nix.summer.finall.core.interactors.TakeMoneyInteractor
 import com.nix.summer.finall.core.interactors.ShowResourcesInteractor
 import com.nix.summer.finall.core.interactors.ExchangeCurrencyInteractor
+import com.nix.summer.finall.core.interactors.LoadPaymentInteractor
+import com.nix.summer.finall.core.interactors.SaveCurrencyInteractor
 import com.nix.summer.finall.data.repositories.FakeActionRepositoryImplementation
 import com.nix.summer.finall.data.repositories.FakeExchangeRepositoryImplementation
+import com.nix.summer.finall.data.repositories.PaymentRepositoryImplementation
 import com.nix.summer.finall.data.mappers.NetworkPaymentToPaymentMapper
+import com.nix.summer.finall.data.mappers.PaymentToDatabasePaymentMapper
+import com.nix.summer.finall.data.mappers.DatabasePaymentToPaymentMapper
 import com.nix.summer.finall.data.network.Network
 
 class MainActivity : AppCompatActivity(), Contract.View {
-    private var presenter = MainPresenter(
-        BuyCoffeeInteractor(FakeActionRepositoryImplementation()),
-        FillResourcesInteractor(FakeActionRepositoryImplementation()),
-        TakeMoneyInteractor(FakeActionRepositoryImplementation()),
-        ShowResourcesInteractor(FakeActionRepositoryImplementation()),
-        ExchangeCurrencyInteractor(
-            FakeExchangeRepositoryImplementation(
-                Network.api,
-                NetworkPaymentToPaymentMapper()
-            )
+    private val presenter by lazy {
+        val repository = PaymentRepositoryImplementation(
+            Network.api,
+            NetworkPaymentToPaymentMapper(),
+            Database.provideDao(baseContext),
+            DatabasePaymentToPaymentMapper(),
+            PaymentToDatabasePaymentMapper()
         )
-    )
 
+        MainPresenter(
+            BuyCoffeeInteractor(FakeActionRepositoryImplementation()),
+            FillResourcesInteractor(FakeActionRepositoryImplementation()),
+            TakeMoneyInteractor(FakeActionRepositoryImplementation()),
+            ShowResourcesInteractor(FakeActionRepositoryImplementation()),
+            ExchangeCurrencyInteractor(repository),
+            SaveCurrencyInteractor(repository),
+            LoadPaymentInteractor(repository)
+        )
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         presenter.attach(this)
         presenter.start()
-        val fillBtn_click = findViewById(R.id.fillBtn) as Button
-        fillBtn_click.setOnClickListener {
-            fillResources()
-        }
-
-        val moneyBtn_click = findViewById(R.id.moneyBtn) as ImageButton
-        moneyBtn_click.setOnClickListener {
-            presenter.takeCommand("take")
-        }
-
-        val espressoBtn_click = findViewById(R.id.espressoBtn) as ImageButton
-        espressoBtn_click.setOnClickListener {
-            presenter.takeCommand("ESPRESSO")
-        }
-
-        val latteBtn_click = findViewById(R.id.latteBtn) as ImageButton
-        latteBtn_click.setOnClickListener {
-            presenter.takeCommand("LATTE")
-        }
-
-        val cappuccinoBtn_click = findViewById(R.id.cappuccinoBtn) as ImageButton
-        cappuccinoBtn_click.setOnClickListener {
-            presenter.takeCommand("CAPPUCCINO")
-        }
 
         val switchСurrency_click = findViewById(R.id.switchСurrency) as Switch
         switchСurrency_click.setOnClickListener {
@@ -79,6 +69,46 @@ class MainActivity : AppCompatActivity(), Contract.View {
             }
         }
 
+        val fillBtn_click = findViewById(R.id.fillBtn) as Button
+        fillBtn_click.setOnClickListener {
+            fillResources()
+        }
+
+        val moneyBtn_click = findViewById(R.id.moneyBtn) as ImageButton
+        moneyBtn_click.setOnClickListener {
+            presenter.takeCommand("take", "")
+        }
+
+        val espressoBtn_click = findViewById(R.id.espressoBtn) as ImageButton
+        espressoBtn_click.setOnClickListener {
+            if(switchСurrency_click.isChecked) {
+                presenter.takeCommand("ESPRESSO", "UAH")
+            }
+            else {
+                presenter.takeCommand("ESPRESSO", "USD")
+            }
+        }
+
+        val latteBtn_click = findViewById(R.id.latteBtn) as ImageButton
+        latteBtn_click.setOnClickListener {
+            if(switchСurrency_click.isChecked) {
+                presenter.takeCommand("LATTE", "UAH")
+            }
+            else {
+                presenter.takeCommand("LATTE", "USD")
+            }
+        }
+
+        val cappuccinoBtn_click = findViewById(R.id.cappuccinoBtn) as ImageButton
+        cappuccinoBtn_click.setOnClickListener {
+            if(switchСurrency_click.isChecked) {
+                presenter.takeCommand("CAPPUCCINO", "UAH")
+            }
+            else {
+                presenter.takeCommand("CAPPUCCINO", "USD")
+            }
+        }
+
         val espressoPrice: TextView  = findViewById(R.id.espressoPrice)
         espressoPrice.text = String.format("%.2f", Coffee.ESPRESSO.money) + " USD"
 
@@ -87,10 +117,11 @@ class MainActivity : AppCompatActivity(), Contract.View {
 
         val cappuccinoPrice: TextView  = findViewById(R.id.cappuccinoPrice)
         cappuccinoPrice.text = String.format("%.2f", Coffee.CAPPUCCINO.money) + " USD"
+
+        presenter.loadPayment()
     }
 
-    override fun setStatus(status: Status)
-    {
+    override fun setStatus(status: Status) {
 
         val statusText: TextView = findViewById(R.id.statusText)
         if(status == Status.OK) {
@@ -169,5 +200,8 @@ class MainActivity : AppCompatActivity(), Contract.View {
         cappuccinoPrice.text = str
     }
 
+    override fun showPayment(str: String) {
+        Toast.makeText(this@MainActivity, str, Toast.LENGTH_LONG).show()
+    }
 }
 

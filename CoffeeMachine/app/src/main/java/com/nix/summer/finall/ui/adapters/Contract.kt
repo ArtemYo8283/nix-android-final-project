@@ -12,6 +12,7 @@ class Contract {
         fun showEspressoPrice(str: String)
         fun showLattePrice(str: String)
         fun showCappuccinoPrice(str: String)
+        fun showPayment(str: String)
     }
 
     interface Presenter {

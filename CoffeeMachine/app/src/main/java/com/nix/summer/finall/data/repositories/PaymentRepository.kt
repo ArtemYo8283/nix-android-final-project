@@ -8,5 +8,5 @@ interface PaymentRepository {
 
     fun savePayment(payment: Payment)
 
-    fun loadPayment(id: Long): Payment?
+    fun loadPayment(): Payment?
 }
