@@ -25,6 +25,14 @@
         <item name="android:layout_width">100dp</item>
         <item name="android:layout_height">100dp</item>
     </style>
+    <style name="PriceText">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/halbert</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@android:color/holo_green_dark</item>
+    </style>
     <style name="ResourcesText" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

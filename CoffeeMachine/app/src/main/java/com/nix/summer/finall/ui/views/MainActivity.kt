@@ -1,4 +1,4 @@
-package com.nix.summer.finall.ui
+package com.nix.summer.finall.ui.views
 
 import androidx.core.content.ContextCompat
 import android.graphics.Color
@@ -10,22 +10,33 @@ import android.view.View.OnTouchListener
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.nix.summer.finall.*
-import com.nix.summer.finall.adapters.Contract
-import com.nix.summer.finall.adapters.MainPresenter
+import com.nix.summer.finall.core.entities.Coffee
+import com.nix.summer.finall.ui.adapters.Contract
+import com.nix.summer.finall.ui.adapters.MainPresenter
 import com.nix.summer.finall.core.entities.Resources
 import com.nix.summer.finall.core.entities.Status
 import com.nix.summer.finall.core.interactors.BuyCoffeeInteractor
 import com.nix.summer.finall.core.interactors.FillResourcesInteractor
 import com.nix.summer.finall.core.interactors.TakeMoneyInteractor
 import com.nix.summer.finall.core.interactors.ShowResourcesInteractor
+import com.nix.summer.finall.core.interactors.ExchangeCurrencyInteractor
 import com.nix.summer.finall.data.repositories.FakeActionRepositoryImplementation
+import com.nix.summer.finall.data.repositories.FakeExchangeRepositoryImplementation
+import com.nix.summer.finall.data.mappers.NetworkPaymentToPaymentMapper
+import com.nix.summer.finall.data.network.Network
 
 class MainActivity : AppCompatActivity(), Contract.View {
     private var presenter = MainPresenter(
         BuyCoffeeInteractor(FakeActionRepositoryImplementation()),
         FillResourcesInteractor(FakeActionRepositoryImplementation()),
         TakeMoneyInteractor(FakeActionRepositoryImplementation()),
-        ShowResourcesInteractor(FakeActionRepositoryImplementation())
+        ShowResourcesInteractor(FakeActionRepositoryImplementation()),
+        ExchangeCurrencyInteractor(
+            FakeExchangeRepositoryImplementation(
+                Network.api,
+                NetworkPaymentToPaymentMapper()
+            )
+        )
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +68,25 @@ class MainActivity : AppCompatActivity(), Contract.View {
         cappuccinoBtn_click.setOnClickListener {
             presenter.takeCommand("CAPPUCCINO")
         }
+
+        val switchСurrency_click = findViewById(R.id.switchСurrency) as Switch
+        switchСurrency_click.setOnClickListener {
+            if(switchСurrency_click.isChecked) {
+                presenter.exchangePayment("UAH")
+            }
+            else {
+                presenter.exchangePayment("USD")
+            }
+        }
+
+        val espressoPrice: TextView  = findViewById(R.id.espressoPrice)
+        espressoPrice.text = String.format("%.2f", Coffee.ESPRESSO.money) + " USD"
+
+        val lattePrice: TextView  = findViewById(R.id.lattePrice)
+        lattePrice.text = String.format("%.2f", Coffee.LATTE.money) + " USD"
+
+        val cappuccinoPrice: TextView  = findViewById(R.id.cappuccinoPrice)
+        cappuccinoPrice.text = String.format("%.2f", Coffee.CAPPUCCINO.money) + " USD"
     }
 
     override fun setStatus(status: Status)
@@ -102,24 +132,42 @@ class MainActivity : AppCompatActivity(), Contract.View {
         cupsText.text = resources.disposableCups.toString() + " pcs."
     }
 
-    override fun takeMoney(money: Int) {
+    override fun takeMoney(money: Double) {
         Toast.makeText(this@MainActivity, "You receive $money grn.", Toast.LENGTH_SHORT).show()
     }
 
     fun fillResources() {
-        val waterInput: EditText  = findViewById(R.id.waterInput)
-        val milkInput: EditText  = findViewById(R.id.milkInput)
-        val coffeeInput: EditText  = findViewById(R.id.coffeeInput)
-        val cupsInput: EditText  = findViewById(R.id.cupsInput)
-        val resources = Resources(Integer.parseInt(waterInput.text.toString()),
+        val waterInput: EditText = findViewById(R.id.waterInput)
+        val milkInput: EditText = findViewById(R.id.milkInput)
+        val coffeeInput: EditText = findViewById(R.id.coffeeInput)
+        val cupsInput: EditText = findViewById(R.id.cupsInput)
+        val resources = Resources(
+            Integer.parseInt(waterInput.text.toString()),
             Integer.parseInt(milkInput.text.toString()),
             Integer.parseInt(coffeeInput.text.toString()),
-            Integer.parseInt(cupsInput.text.toString()))
+            Integer.parseInt(cupsInput.text.toString())
+        )
         waterInput.setText("0")
         milkInput.setText("0")
         coffeeInput.setText("0")
         cupsInput.setText("0")
         presenter.fillResources(resources)
     }
+
+    override fun showEspressoPrice(str: String) {
+        val espressoPrice: TextView = findViewById(R.id.espressoPrice)
+        espressoPrice.text = str
+    }
+
+    override fun showLattePrice(str: String) {
+        val lattePrice: TextView = findViewById(R.id.lattePrice)
+        lattePrice.text = str
+    }
+
+    override fun showCappuccinoPrice(str: String) {
+        val cappuccinoPrice: TextView = findViewById(R.id.cappuccinoPrice)
+        cappuccinoPrice.text = str
+    }
+
 }
 

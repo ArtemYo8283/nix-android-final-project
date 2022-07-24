@@ -7,7 +7,7 @@ import com.nix.summer.finall.core.entities.Status
 class FakeActionRepositoryImplementation : ActionRepository {
     object CoffeeMachine {
         var resources = Resources(540, 400 , 120,9)
-        var money: Int = 550
+        var money: Double = 550.0
     }
 
     override fun buy(type: Coffee): Status{
@@ -38,9 +38,9 @@ class FakeActionRepositoryImplementation : ActionRepository {
         CoffeeMachine.resources.disposableCups += _resources.disposableCups
     }
 
-    override fun take(): Int {
-        var tmp: Int = CoffeeMachine.money
-        CoffeeMachine.money = 0
+    override fun take(): Double {
+        var tmp: Double = CoffeeMachine.money
+        CoffeeMachine.money = 0.0
         return tmp
     }
 
