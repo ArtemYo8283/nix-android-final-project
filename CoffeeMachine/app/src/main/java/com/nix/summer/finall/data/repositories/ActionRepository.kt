@@ -9,7 +9,7 @@ interface ActionRepository {
 
     fun fill(_resources: Resources)
 
-    fun take(): Int
+    fun take(): Double
 
     fun show(): Resources
 }

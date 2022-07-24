@@ -1,4 +1,4 @@
-package com.nix.summer.finall.adapters
+package com.nix.summer.finall.ui.adapters
 
 import com.nix.summer.finall.core.entities.Resources
 import com.nix.summer.finall.core.entities.Status
@@ -8,7 +8,10 @@ class Contract {
     interface View {
         fun setStatus(status: Status)
         fun showResources(resources: Resources)
-        fun takeMoney(money: Int)
+        fun takeMoney(money: Double)
+        fun showEspressoPrice(str: String)
+        fun showLattePrice(str: String)
+        fun showCappuccinoPrice(str: String)
     }
 
     interface Presenter {

@@ -6,5 +6,5 @@ import com.nix.summer.finall.core.entities.Status
 import com.nix.summer.finall.data.repositories.ActionRepository
 
 class TakeMoneyInteractor(private val repository: ActionRepository) {
-    operator fun invoke(): Int = repository.take()
+    operator fun invoke(): Double = repository.take()
 }
